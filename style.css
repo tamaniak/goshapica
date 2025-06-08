@@ -1,8 +1,71 @@
-/* GoShaPica Stylesheet */
-body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f0f2f5;
-    color: #1c1e21;
-    text-align: center;
-    padding-top: 50px;
+/* GoShaPica Stylesheet - "Frame of the Day" Version */
+
+/* --- 1. Design System & Global Styles --- */
+:root {
+    --primary: #007AFF; --primary-hover: #0056CC; --primary-light: rgba(0, 122, 255, 0.1); --secondary: #34C759; --danger: #FF3B30; --surface: #FFFFFF; --surface-secondary: rgba(255, 255, 255, 0.8); --background: #F2F2F7; --text-primary: #1d1d1f; --text-secondary: #6e6e73; --border: rgba(0, 0, 0, 0.1); --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15); --shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.15); --blur: blur(12px); --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px; --radius-2xl: 24px;
 }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--text-primary); line-height: 1.5; }
+
+/* --- 2. Layout & Card --- */
+#app-root { min-height: 100vh; padding: 24px; display: flex; flex-direction: column; }
+.header { text-align: center; margin-bottom: 28px; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.logo h1 { font-size: 2.5rem; font-weight: 700; }
+.tagline { font-size: 1.1rem; opacity: 0.9; }
+.main-content { flex: 1; max-width: 700px; /* Reduced max-width for single column */ margin: 0 auto; width: 100%; }
+/* UPDATED: content-grid is now a flex container to center the single card */
+.content-grid { display: flex; justify-content: center; margin-bottom: 28px; }
+.card { background: var(--surface-secondary); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border-radius: var(--radius-2xl); padding: 32px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: var(--shadow-medium); width: 100%; }
+.card__header { padding-bottom: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border); text-align: center; }
+.card__header h2 { font-size: 1.4rem; font-weight: 600; }
+
+/* --- 3. UI Components --- */
+.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 56px 32px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255,255,255,0.5); }
+.upload-zone:hover, .upload-zone:focus-visible { border-color: var(--primary); background: var(--primary-light); transform: translateY(-2px); }
+.upload-zone.dragover { border-style: solid; border-color: var(--secondary); background: rgba(52, 199, 89, 0.1); }
+.upload-zone__text { font-size: 1.2rem; font-weight: 600; margin: 8px 0; pointer-events: none; }
+.upload-zone__subtext { font-size: 0.95rem; color: var(--text-secondary); pointer-events: none; }
+.preview-image { width: 100%; max-height: 300px; border-radius: var(--radius-lg); margin: 20px auto; display: none; object-fit: contain; }
+.preview-section { display: none; }
+.canvas-container { margin: 32px 0; display: flex; justify-content: center; position: relative; background-color: var(--background); padding: 16px; border-radius: var(--radius-lg); }
+canvas { max-width: 100%; max-height: 500px; border-radius: var(--radius-md); box-shadow: var(--shadow-medium); }
+.actions { display: flex; gap: 20px; justify-content: center; margin-top: 32px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-2xl); border: none; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; background-color: #ccc; color: #666; }
+.btn--primary { background: var(--primary); color: white; }
+.btn--primary:not(:disabled):hover { background: var(--primary-hover); transform: translateY(-2px); }
+.btn--secondary { background: var(--surface); color: var(--primary); border: 1px solid var(--border); }
+.btn--secondary:not(:disabled):hover { background: var(--primary-light); }
+
+/* --- Admin Icon --- */
+.admin-access { position: fixed; bottom: 20px; right: 20px; z-index: 100; background: var(--surface); width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer; box-shadow: var(--shadow-medium); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 24px; }
+.admin-access:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--shadow-heavy); }
+/* --- 4. Admin & Modals --- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); opacity: 0; transition: opacity 0.3s ease; }
+.modal-overlay.show { display: flex; opacity: 1; }
+.modal, .admin-panel { background: white; padding: 40px; border-radius: var(--radius-xl); box-shadow: 0 20px 40px rgba(0,0,0,0.3); transform: scale(0.95); transition: transform 0.3s ease; }
+.modal-overlay.show .modal, .modal-overlay.show .admin-panel { transform: scale(1); }
+.modal { min-width: 350px; text-align: center; }
+.modal__title { margin-bottom: 24px; font-size: 1.5rem; }
+.modal__actions { display: flex; gap: 12px; margin-top: 16px; }
+.modal__actions > .btn { flex: 1; }
+.admin-panel { max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; }
+.admin-panel__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.admin-section { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+.form-input { width: 100%; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 1rem; }
+.frame-management-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.admin-frame-card { background: var(--background); padding: 16px; border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: 12px; transition: all 0.3s ease; border: 2px solid transparent; }
+.admin-frame-card.is-active { border-color: var(--secondary); box-shadow: 0 0 10px rgba(52, 199, 89, 0.3); }
+.admin-frame-card__header { display: flex; align-items: center; gap: 8px; width: 100%; }
+.admin-frame-card__status { width: 12px; height: 12px; border-radius: 50%; background-color: #ccc; flex-shrink: 0; }
+.admin-frame-card__status.is-active { background-color: var(--secondary); }
+.admin-frame-card__name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-frame-card__img { width: 100%; height: 150px; object-fit: contain; background-color: rgba(0,0,0,0.02); border-radius: var(--radius-md); padding: 8px; }
+.admin-frame-card__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: auto; }
+
+/* Utility Classes */
+.u-text-small { font-size: 0.9rem; }
+.u-text-secondary { color: var(--text-secondary); }
+.u-margin-bottom { margin-bottom: 16px; }
+.u-full-width { width: 100%; }
+.u-hidden { display: none !important; }

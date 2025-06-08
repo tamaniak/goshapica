@@ -3,11 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoShaPica Project</title>
+    <title>GoShaPica - Frame of the Day</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Welcome to GoShaPica!</h1>
+    <div id="app-root">
+        <header class="header">
+            <div class="logo"><h1>GoShaPica</h1></div>
+            <p class="tagline">Featuring the Frame of the Day</p>
+        </header>
+        <main class="main-content">
+            <div class="content-grid">
+                <section class="card" aria-labelledby="upload-heading">
+                    <header class="card__header"><h2 id="upload-heading">Upload Your Photo</h2></header>
+                    <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload photo">
+                        <p class="upload-zone__text">Click or drag photo here</p>
+                        <p class="upload-zone__subtext">The Frame of the Day will be applied automatically</p>
+                    </div>
+                    <input type="file" id="fileInput" hidden accept="image/jpeg, image/png">
+                    <img id="uploadedImage" class="preview-image" alt="Uploaded photo preview">
+                </section>
+            </div>
+            <section class="card preview-section" id="previewSection" aria-labelledby="preview-heading">
+                <header class="card__header"><h2 id="preview-heading">Your Framed Photo</h2></header>
+                <div class="canvas-container"><canvas id="canvas"></canvas></div>
+                <div class="actions">
+                    <button class="btn btn--primary" id="downloadBtn" disabled>Download Photo</button>
+                    <button class="btn btn--secondary" id="resetBtn">Start Over</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <button class="admin-access" id="adminAccessBtn" aria-label="Open Admin Panel">⚙️</button>
+    <div id="adminModal" class="modal-overlay">
+        <div class="modal" role="dialog" aria-labelledby="admin-modal-title" aria-modal="true">
+            <h3 id="admin-modal-title" class="modal__title">Admin Access</h3>
+            <form id="adminLoginForm">
+                <input type="password" id="adminPasswordInput" placeholder="Enter admin password" class="form-input" required>
+                <div class="modal__actions">
+                    <button type="submit" class="btn btn--primary">Login</button>
+                    <button type="button" id="adminCancelBtn" class="btn btn--secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="adminPanel" class="modal-overlay">
+        <div class="admin-panel" role="dialog" aria-labelledby="admin-panel-title" aria-modal="true">
+            <header class="admin-panel__header">
+                <h2 id="admin-panel-title">GoShaPica Admin Panel</h2>
+                <button id="adminCloseBtn" class="btn btn--danger" aria-label="Close Admin Panel">✕</button>
+            </header>
+            <div id="adminStatus" class="status-container" aria-live="assertive"></div>
+            <section class="admin-section" aria-labelledby="manage-frames-heading">
+                <h3 id="manage-frames-heading">Manage & Activate Frames</h3>
+                <p class="u-text-small u-text-secondary u-margin-bottom">Only one frame can be active at a time. This sets the "Frame of the Day" for all users.</p>
+                <div id="frameManagementGrid" class="frame-management-grid"></div>
+            </section>
+        </div>
+    </div>
+    <template id="adminFrameCardTemplate">
+        <div class="admin-frame-card">
+            <div class="admin-frame-card__header">
+                <span class="admin-frame-card__status" title="Status"></span>
+                <p class="admin-frame-card__name"></p>
+            </div>
+            <img class="admin-frame-card__img" src="" alt="">
+            <div class="admin-frame-card__actions">
+                <button class="btn btn--secondary btn--small admin-frame-card__activate-btn" aria-label="Activate frame">Activate</button>
+            </div>
+        </div>
+    </template>
 </body>
 </html>
